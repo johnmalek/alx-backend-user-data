@@ -89,5 +89,26 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     return con
 
 
+def main():
+    """
+    main function that takes no arguments and returns nothing.
+
+    The function will obtain a database connection using get_db
+    and retrieve all rows in the users table and display each
+    row under a filtered format like this:
+    """
+    db = get_db()
+    logger = get_logger()
+    cursor = db.cursor()
+    query = "SELECT * FROM users;"
+    cursor.execute(query)
+    fields = cursor.column_names
+    for row in cursor:
+        message = "".join("{}={}; ".format(k,v) for k, v in zip(fields, row))
+        logger.info(message.strip())
+    cursor.close()
+    db.close()
+
+
 if __name__ == "__main__":
     main()
