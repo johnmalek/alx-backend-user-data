@@ -29,4 +29,4 @@ def stats() -> str:
 def unauthorized() -> str:
     """Unauthorized handler
     """
-    return abort(401)
+    abort(401)
