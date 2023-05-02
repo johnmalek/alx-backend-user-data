@@ -27,7 +27,12 @@ class Auth:
         Returns:
           - None
         """
-        return None
+        if request is None:
+            return None
+        elif "Authorization" not in request.keys():
+            return None
+        else:
+            return request["Authorization"]
 
     def current_user(self, request=None) -> TypeVar('User'):
         """a public method
