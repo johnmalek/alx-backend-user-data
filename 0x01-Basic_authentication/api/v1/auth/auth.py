@@ -15,7 +15,6 @@ class Auth:
         """
         return False
 
-
     def authorization_header(self, request=None) -> str:
         """a public method
         Returns:
@@ -23,7 +22,6 @@ class Auth:
         """
         return None
 
-    
     def current_user(self, request=None) -> TypeVar('User'):
         """a public method
         Return:
