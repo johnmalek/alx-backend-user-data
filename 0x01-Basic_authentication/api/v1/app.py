@@ -47,7 +47,11 @@ def forbidden(error) -> str:
 def before_request() -> str:
     """handle before_request
     """
-    path_list = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
+    path_list = [
+            '/api/v1/status/',
+            '/api/v1/unauthorized/',
+            '/api/v1/forbidden/'
+    ]
     if auth is None:
         return
     elif auth.require_auth(request.path, path_list) not in path_list:
