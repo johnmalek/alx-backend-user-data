@@ -6,7 +6,7 @@ from typing import List
 
 
 class Auth:
-    """Authentication class
+    """Class to manage API Authentication
     """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """a public method
