@@ -19,7 +19,7 @@ class Auth:
             return True
         elif path in excluded_paths:
             return False
-        elif "/api/v1/status" in excluded_paths:
+        elif "/status" in excluded_paths:
             return False
 
     def authorization_header(self, request=None) -> str:
