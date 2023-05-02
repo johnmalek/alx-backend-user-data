@@ -13,7 +13,12 @@ class Auth:
         Return:
           - False
         """
-        return False
+        if path == None:
+            return True
+        elif excluded_paths == None or len(excluded_paths) == 0:
+            return True
+        elif path in excluded_paths:
+            return False
 
     def authorization_header(self, request=None) -> str:
         """a public method
