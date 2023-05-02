@@ -13,9 +13,9 @@ class Auth:
         Return:
           - False
         """
-        if path == None:
+        if path is None:
             return True
-        elif excluded_paths == None or len(excluded_paths) == 0:
+        elif excluded_paths is None or len(excluded_paths) == 0:
             return True
         elif path in excluded_paths:
             return False
