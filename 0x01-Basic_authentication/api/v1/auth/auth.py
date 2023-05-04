@@ -20,7 +20,15 @@ class Auth:
         elif path in excluded_paths:
             return False
         else:
-            return False
+            for i in excluded_paths:
+                if i.startswith(path):
+                    return False
+                if path.startswith(i):
+                    return False
+                if i[-1] == "*":
+                    if path.startswith(i[:-1]):
+                        return False
+        return False
 
     def authorization_header(self, request=None) -> str:
         """a public method
@@ -29,10 +37,10 @@ class Auth:
         """
         if request is None:
             return None
-        elif "Authorization" not in request.keys():
+        header = request.headers.get('Authorization')
+        if header is None:
             return None
-        else:
-            return request["Authorization"]
+        return header
 
     def current_user(self, request=None) -> TypeVar('User'):
         """a public method

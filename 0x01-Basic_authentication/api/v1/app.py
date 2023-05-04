@@ -4,8 +4,6 @@ Route module for the API
 """
 from os import getenv
 from api.v1.views import app_views
-from api.v1.auth.auth import Auth
-from api.v1.auth.basic_auth import BasicAuth
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
@@ -15,16 +13,37 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
-auth_type = os.getenv("AUTH_TYPE")
-if auth_type == "basic_auth":
-    auth = BasicAuth()
-else:
+AUTH_TYPE = os.getenv("AUTH_TYPE")
+if AUTH_TYPE == "basic_auth":
+    from api.v1.auth.auth import Auth
     auth = Auth()
+else:
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
+
+
+@app.before_request
+def before_request() -> str:
+    """handle before_request
+    """
+    excluded_paths = [
+            '/api/v1/status/',
+            '/api/v1/unauthorized/',
+            '/api/v1/forbidden/'
+    ]
+    if auth is None:
+        return
+    else:
+        if auth.require_auth(request.path, excluded_paths):
+            if auth.authorization_header(request) is None:
+                abort(401, description="Unauthorized")
+            if auth.current_user(request) is None:
+                abort(403, description="Forbidden")
 
 
 @app.errorhandler(404)
 def not_found(error) -> str:
-    """ Not found handler
+    """Not found handler
     """
     return jsonify({"error": "Not found"}), 404
 
@@ -38,31 +57,12 @@ def unauthorized(error) -> str:
 
 @app.errorhandler(403)
 def forbidden(error) -> str:
-    """Handle forbidden error
+    """Forbidden handler
     """
     return jsonify({"error": "Forbidden"}), 403
 
 
-@app.before_request
-def before_request() -> str:
-    """handle before_request
-    """
-    path_list = [
-            '/api/v1/status/',
-            '/api/v1/unauthorized/',
-            '/api/v1/forbidden/'
-    ]
-    if auth is None:
-        return
-    elif auth.require_auth(request.path, path_list) not in path_list:
-        return
-    elif auth.authorization_header(request) is None:
-        return abort(401)
-    elif auth.current_user(request) is None:
-        return abort(403)
-
-
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
-    port = getenv("API_PORT", "5000")
+    port = getenv("API_PORT", "8500")
     app.run(host=host, port=port)
