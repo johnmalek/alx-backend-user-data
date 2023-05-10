@@ -46,15 +46,14 @@ class DB:
         and returns the first row found in the users table
         as filtered by the method’s input arguments
         """
-        users_in_db = self._session.query(User)
-        for key, value in kwargs.items():
-            if key not in User.__dict__:
-                raise InvalidRequestError
-            for user in users_in_db:
-                if getattr(user, key) == value:
-                    return user
-        raise NoResultFound
-
+        try:
+            users_in_db = self._session.query(User).filter_by(**kwargs).first()
+            if not users_in_db:
+                raise NoResultFound
+            return users_in_db
+        except InvalidRequestError as err:
+            raise err
+                    
     def update_user(self, user_id: int, **kwargs) -> None:
         """method that takes as argument a required
         user_id integer and arbitrary keyword arguments
