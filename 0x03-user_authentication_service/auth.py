@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """A python module
 """
+from sqlalchemy.orm.exc import NoResultFound
 import bcrypt
 from db import DB
 from user import User
@@ -12,6 +13,7 @@ def _hash_password(password: str) -> bytes:
     """
     hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     return hashed_password
+
 
 class Auth:
     """Auth class to interact with the authentication database.
@@ -30,7 +32,7 @@ class Auth:
         """
         try:
             user_by_email = self._db.find_user_by(email=email)
-        except:
+        except NoResultFound:
             hashed_pwd = _hash_password(password)
             user = self._db.add_user(email=email, hashed_password=hashed_pwd)
             return user
