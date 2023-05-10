@@ -18,7 +18,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -37,9 +37,8 @@ class DB:
         and hashed_password, and returns a User object
         """
         user = User(email=email, hashed_password=hashed_password)
-        session = self._session
-        session.add(user)
-        session.commit()
+        self._session.add(user)
+        self._session.commit()
         return user
 
     def find_user_by(self, **kwargs) -> User:
@@ -47,8 +46,7 @@ class DB:
         and returns the first row found in the users table
         as filtered by the method’s input arguments
         """
-        session = self._session
-        users_in_db = session.query(User)
+        users_in_db = self._session.query(User)
         for key, value in kwargs.items():
             if key not in User.__dict__:
                 raise InvalidRequestError
