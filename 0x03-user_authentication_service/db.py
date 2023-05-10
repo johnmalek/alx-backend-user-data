@@ -49,10 +49,10 @@ class DB:
         """
         session = self._session
         users_in_db = session.query(User)
-        for a, b in kwargs.items():
-            if a not in User.__dict__:
+        for key, value in kwargs.items():
+            if key not in User.__dict__:
                 raise InvalidRequestError
             for user in users_in_db:
-                if getattr(user, a) == b:
+                if getattr(user, key) == value:
                     return user
         raise NoResultFound
