@@ -68,5 +68,5 @@ class DB:
                 raise ValueError()
             if getattr(user, key) != value:
                 setattr(user, key, value)
-                
+
         self._session.commit()
