@@ -3,6 +3,7 @@
 """
 from sqlalchemy.orm.exc import NoResultFound
 import bcrypt
+from typing import Union
 from db import DB
 from user import User
 import uuid
@@ -68,10 +69,14 @@ class Auth:
         self._db._session.commit()
         return user_uuid
 
-    def get_user_from_session_id(self, session_id: str) -> List[User, None]:
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """Find user by session ID
         """
-        user = self._db.find_user_by(session_id=session_id)
-        if session_id is None or NoResultFound:
+        if session_id is None:
             return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+        except NoResultFound:
+            return None
+
         return user
