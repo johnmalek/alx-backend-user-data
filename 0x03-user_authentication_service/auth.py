@@ -99,3 +99,17 @@ class Auth:
         user.reset_token = user_uuid
         self._db._session.commit()
         return user_uuid
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """update password
+        """
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+        except NoResultFound:
+            raise ValueError()
+        hashed_pwd = _hash_password(password)
+        user.hashed_password = hashed_pwd
+        user.reset_token = None
+        self._db._session.commit()
+        return None
+        
