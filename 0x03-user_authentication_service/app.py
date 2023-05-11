@@ -74,11 +74,13 @@ def get_reset_password_token() -> str:
     """Handle the /reset_password route
     """
     email = request.form.get("email")
-    if AUTH.find_user_by(email=email) is None:
+    try:
+        AUTH.get_reset_password_token(email)
+    except ValueError:
         abort(403)
     reset_token = AUTH.get_reset_password_token(email)
     return jsonify({"email": f"{email}", "reset_token": f"{reset_token}"})
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="8000")
+    app.run(host="0.0.0.0", port="5000")
