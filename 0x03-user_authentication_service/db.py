@@ -62,10 +62,10 @@ class DB:
         try:
             user = self.find_user_by(id=user_id)
         except NoResultFound:
-            raise ValueEror()
+            raise ValueError()
         for key, value in kwargs.items():
             if key not in User.__dict__:
-                raise ValueError
+                raise ValueError()
             if getattr(user, key) == value:
                 user[key] = value
                 self._session.commit()
