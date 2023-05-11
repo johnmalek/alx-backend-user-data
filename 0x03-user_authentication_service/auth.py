@@ -112,4 +112,3 @@ class Auth:
         user.reset_token = None
         self._db._session.commit()
         return None
-        
