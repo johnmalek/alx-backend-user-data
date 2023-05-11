@@ -64,8 +64,9 @@ class DB:
         except NoResultFound:
             raise ValueError()
         for key, value in kwargs.items():
-            if key not in user.__dict__:
+            if not hasattr(user, key):
                 raise ValueError()
-            if getattr(user, key) == value:
-                user[key] = value
-                self._session.commit()
+            if getattr(user, key) != value:
+                setattr(user, key, value)
+                
+        self._session.commit()
