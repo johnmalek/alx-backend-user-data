@@ -64,7 +64,7 @@ class DB:
         except NoResultFound:
             raise ValueError()
         for key, value in kwargs.items():
-            if key not in User.__dict__:
+            if key not in user.__dict__:
                 raise ValueError()
             if getattr(user, key) == value:
                 user[key] = value
