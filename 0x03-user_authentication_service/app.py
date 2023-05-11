@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Flask app
 """
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 AUTH = Auth()
@@ -46,5 +46,18 @@ def login() -> str:
     return res
 
 
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+def logout() -> str:
+    """logout a user
+    """
+    user_session_id = request.cookies.get(session_id)
+    try:
+        user = AUTH.find_user_by(session_id=user_session_id)
+    except not user:
+        abort(403)
+    AUTH.destroy_session(user_session_id)
+    redirect(url_for('home'))
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5550")
+    app.run(host="0.0.0.0", port="5000")
